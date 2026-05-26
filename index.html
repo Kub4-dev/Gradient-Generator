@@ -3,12 +3,10 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Dream Art Generator</title>
+<title>Dream Art</title>
 
 <style>
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
@@ -21,40 +19,54 @@ body {
     radial-gradient(circle at top left, #1e293b, transparent 40%),
     radial-gradient(circle at bottom right, #312e81, transparent 40%),
     #020617;
-  font-family: Inter, Arial, sans-serif;
+  font-family: Arial, sans-serif;
   color: white;
   padding: 40px 0;
 }
 
-h1 {
-  font-size: 42px;
-  margin-bottom: 10px;
-}
-
-p {
-  opacity: 0.7;
-  margin-bottom: 20px;
-}
-
-/* PANEL */
 .panel {
   display: flex;
-  gap: 18px;
+  gap: 20px;
   align-items: center;
-  padding: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 14px;
   border-radius: 22px;
   background: rgba(255,255,255,0.06);
   backdrop-filter: blur(16px);
-  box-shadow: 0 20px 50px rgba(0,0,0,0.4);
   margin-bottom: 20px;
 }
 
-/* COLOR BOX */
 .colorBox {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 6px;
+}
+
+input[type="color"] {
+  width: 60px;
+  height: 60px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  background: transparent;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.45);
+  transition: 0.2s ease;
+}
+
+input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 5px;
+}
+
+input[type="color"]::-webkit-color-swatch {
+  border: none;
+  border-radius: 14px;
+}
+
+input[type="color"]:hover {
+  transform: translateY(-3px) scale(1.05);
 }
 
 .colorBox span {
@@ -63,109 +75,127 @@ p {
   opacity: 0.8;
 }
 
-/* COLOR PICKER */
-input[type="color"] {
-  width: 75px;
-  height: 75px;
-  border-radius: 18px;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.4);
-}
-
-input[type="color"]:hover {
-  transform: translateY(-3px) scale(1.05);
-  box-shadow: 0 18px 40px rgba(0,0,0,0.6);
-}
-
-input[type="color"]::-webkit-color-swatch-wrapper {
-  padding: 0;
-  border-radius: 18px;
-}
-
-input[type="color"]::-webkit-color-swatch {
-  border: none;
-  border-radius: 18px;
-}
-
-/* BUTTONS */
 button {
   border: none;
-  padding: 12px 18px;
-  border-radius: 14px;
-  font-weight: 700;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-weight: bold;
   cursor: pointer;
   background: linear-gradient(135deg, #38bdf8, #818cf8);
   color: white;
-  transition: 0.2s;
 }
 
-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(56,189,248,0.3);
-}
-
-/* CANVAS */
 canvas {
   width: min(92vw, 1100px);
   border-radius: 22px;
   box-shadow: 0 0 80px rgba(99,102,241,0.35);
 }
 
-/* OUTPUT */
-textarea {
-  margin-top: 15px;
+.cssWrapper {
+  position: relative;
   width: min(92vw,1100px);
+  margin-top: 15px;
+}
+
+textarea {
+  width: 100%;
   height: 180px;
   border-radius: 14px;
-  padding: 12px;
-  background: rgba(0,0,0,0.3);
+  padding: 16px;
+  padding-right: 110px;
+  background: rgba(0,0,0,0.35);
   color: white;
   border: 1px solid rgba(255,255,255,0.1);
+  font-family: monospace;
+  outline: none;
+  resize: none;
+}
+
+.copyBtn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.14);
+  border: 1px solid rgba(255,255,255,0.12);
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.copyBtn:hover {
+  transform: translateY(-2px);
+  background: rgba(255,255,255,0.20);
+}
+
+.toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(12px);
+  padding: 14px 20px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.12);
+  color: #7CFFB2;
+  font-size: 14px;
+  opacity: 0;
+  transition: 0.3s ease;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-5px);
 }
 </style>
 </head>
 
 <body>
 
-<h1>✨ Dream Art</h1>
-<p>Premium gradient generator + CSS export</p>
+<h1>✨ Dream Art </h1>
 
 <div class="panel">
 
   <div class="colorBox">
-    <input type="color" id="color1" value="#00c6ff">
-    <span id="hex1">#00c6ff</span>
+    <input type="color" id="c1" value="#00c6ff">
+    <span id="h1">#00c6ff</span>
   </div>
 
   <div class="colorBox">
-    <input type="color" id="color2" value="#7c3aed">
-    <span id="hex2">#7c3aed</span>
+    <input type="color" id="c2" value="#7c3aed">
+    <span id="h2">#7c3aed</span>
   </div>
 
   <div class="colorBox">
-    <input type="color" id="color3" value="#ff4ecd">
-    <span id="hex3">#ff4ecd</span>
+    <input type="color" id="c3" value="#ff4ecd">
+    <span id="h3">#ff4ecd</span>
   </div>
 
-  <button onclick="generateArt()">🎨 Generuj</button>
-  <button onclick="randomGradient()">✨ Random</button>
-  <button onclick="downloadImage()">⬇ PNG</button>
+  <button onclick="update()">🎨 Generate</button>
+  <button onclick="randomize()">✨ Random</button>
+  <button onclick="download()">⬇ PNG</button>
+
 </div>
 
 <canvas id="canvas" width="1200" height="700"></canvas>
 
-<textarea id="cssOutput"></textarea>
+<div class="cssWrapper">
+  <textarea id="css" readonly></textarea>
+
+  <button class="copyBtn" onclick="copyCSS()">
+    📋 Copy
+  </button>
+</div>
+
+<div class="toast" id="toast"></div>
 
 <script>
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
+const toast = document.getElementById("toast");
 
 function rand(min,max){ return Math.random()*(max-min)+min; }
-function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 
 function hexToRgb(hex){
   const n = parseInt(hex.slice(1),16);
@@ -177,121 +207,109 @@ function rgba(hex,a){
   return `rgba(${c.r},${c.g},${c.b},${a})`;
 }
 
-/* CANVAS ART */
-function createArt(colors){
+/* DRAW */
+function draw(colors){
   ctx.clearRect(0,0,canvas.width,canvas.height);
 
   const angle = rand(0,Math.PI*2);
 
   const g = ctx.createLinearGradient(
     canvas.width/2 + Math.cos(angle)*canvas.width,
-    canvas.height/2 + Math.sin(angle)*canvas.height,
+    canvas.height/2 + Math.sin(angle)*canvas.width,
     canvas.width/2 - Math.cos(angle)*canvas.width,
-    canvas.height/2 - Math.sin(angle)*canvas.height
+    canvas.height/2 - Math.sin(angle)*canvas.width
   );
 
   g.addColorStop(0, colors[0]);
-  g.addColorStop(0.5, colors[1]);
   g.addColorStop(1, colors[2]);
 
   ctx.fillStyle = g;
   ctx.fillRect(0,0,canvas.width,canvas.height);
-
-  ctx.globalCompositeOperation = "screen";
-
-  for(let i=0;i<25;i++){
-    const x = rand(0,canvas.width);
-    const y = rand(0,canvas.height);
-    const r = rand(200,600);
-
-    const rg = ctx.createRadialGradient(x,y,0,x,y,r);
-    rg.addColorStop(0, rgba(pick(colors),0.4));
-    rg.addColorStop(1,"transparent");
-
-    ctx.fillStyle = rg;
-    ctx.beginPath();
-    ctx.arc(x,y,r,0,Math.PI*2);
-    ctx.fill();
-  }
-
-  ctx.globalCompositeOperation = "source-over";
-  vignette();
 }
 
-function vignette(){
-  const v = ctx.createRadialGradient(
-    canvas.width/2,canvas.height/2,canvas.width*0.2,
-    canvas.width/2,canvas.height/2,canvas.width*0.8
-  );
-
-  v.addColorStop(0,"transparent");
-  v.addColorStop(1,"rgba(0,0,0,0.45)");
-
-  ctx.fillStyle = v;
-  ctx.fillRect(0,0,canvas.width,canvas.height);
-}
-
-/* CSS EXPORT */
-function generateCSS(colors){
-  const angle = Math.floor(rand(0,360));
-
-  return `
-.generated-bg {
-  background: linear-gradient(${angle}deg,
+/* CSS */
+function cssGen(colors){
+  return `.generated-bg {
+  background: linear-gradient(120deg,
     ${colors[0]},
     ${colors[1]},
     ${colors[2]}
   );
-}
-`;
+}`;
 }
 
 /* UI */
 function getColors(){
-  return [
-    document.getElementById("color1").value,
-    document.getElementById("color2").value,
-    document.getElementById("color3").value
-  ];
+  return [c1.value, c2.value, c3.value];
 }
 
-function generateArt(){
-  const colors = getColors();
-  createArt(colors);
-  document.getElementById("cssOutput").value = generateCSS(colors);
-  updateHex();
+function update(){
+  const c = getColors();
+  draw(c);
+  css.value = cssGen(c);
+
+  h1.textContent = c[0];
+  h2.textContent = c[1];
+  h3.textContent = c[2];
 }
 
+/* RANDOM */
 function randomHex(){
   return "#"+Math.floor(Math.random()*16777215).toString(16).padStart(6,"0");
 }
 
-function randomGradient(){
-  document.getElementById("color1").value = randomHex();
-  document.getElementById("color2").value = randomHex();
-  document.getElementById("color3").value = randomHex();
-  generateArt();
+function randomize(){
+  c1.value = randomHex();
+  c2.value = randomHex();
+  c3.value = randomHex();
+  update();
 }
 
-function downloadImage(){
+/* COPY FIX (PEŁNY FALLBACK) */
+function copyCSS(){
+  const text = css.value;
+
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text)
+      .then(() => showToast("CSS został skopiowany — możesz go użyć we własnej stronie"))
+      .catch(() => fallbackCopy(text));
+  } else {
+    fallbackCopy(text);
+  }
+}
+
+function fallbackCopy(text){
+  const textarea = document.getElementById("css");
+  textarea.focus();
+  textarea.select();
+
+  try {
+    document.execCommand("copy");
+    showToast("CSS został skopiowany — możesz go użyć we własnej stronie");
+  } catch (e) {
+    showToast("Nie udało się skopiować 😕");
+  }
+}
+
+function showToast(msg){
+  toast.textContent = msg;
+  toast.classList.add("show");
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2500);
+}
+
+/* DOWNLOAD */
+function download(){
   const a = document.createElement("a");
-  a.download = "art.png";
+  a.download = "gradient-image-generated-by-JK-Gradient-Generator.png";
   a.href = canvas.toDataURL("image/png");
   a.click();
 }
 
-/* HEX LIVE UPDATE */
-function updateHex(){
-  document.getElementById("hex1").textContent = document.getElementById("color1").value;
-  document.getElementById("hex2").textContent = document.getElementById("color2").value;
-  document.getElementById("hex3").textContent = document.getElementById("color3").value;
-}
-
-document.getElementById("color1").addEventListener("input", updateHex);
-document.getElementById("color2").addEventListener("input", updateHex);
-document.getElementById("color3").addEventListener("input", updateHex);
-
-generateArt();
+/* INIT */
+update();
 </script>
 
 </body>
