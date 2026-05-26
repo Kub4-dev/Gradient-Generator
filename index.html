@@ -153,7 +153,7 @@ textarea {
 
 <body>
 
-<h1>✨ Dream Art </h1>
+<h1>✨ Dream Art</h1>
 
 <div class="panel">
 
@@ -220,7 +220,9 @@ function draw(colors){
     canvas.height/2 - Math.sin(angle)*canvas.width
   );
 
+  // 🔥 FIX: używamy 3 kolorów
   g.addColorStop(0, colors[0]);
+  g.addColorStop(0.5, colors[1]);
   g.addColorStop(1, colors[2]);
 
   ctx.fillStyle = g;
@@ -265,7 +267,7 @@ function randomize(){
   update();
 }
 
-/* COPY FIX (PEŁNY FALLBACK) */
+/* COPY FIX */
 function copyCSS(){
   const text = css.value;
 
@@ -303,7 +305,7 @@ function showToast(msg){
 /* DOWNLOAD */
 function download(){
   const a = document.createElement("a");
-  a.download = "gradient-image-generated-by-JK-Gradient-Generator.png";
+  a.download = "gradient-image.png";
   a.href = canvas.toDataURL("image/png");
   a.click();
 }
